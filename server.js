@@ -151,7 +151,9 @@ function handleIncomingMessage(value) {
 
 
 function getMessageText(message) {
-    if (message.text) return message.text.body;
+        if (typeof message.text === 'string') return message.text;// ✅ pour Instagram
+        if (typeof message.text === 'object' && message.text.body) return message.text.body; // ✅ pour WhatsApp
+
     if (message.image) return '[Image]';
     if (message.video) return '[Video]';
     if (message.audio) return '[Audio]';
