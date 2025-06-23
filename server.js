@@ -92,50 +92,63 @@ app.get('/privacy-policy', (req, res) => {
 // Handle incoming WhatsApp messages
 function handleIncomingMessage(value) {
     try {
-        
-            console.log('message afficher', JSON.stringify(value, null, 2));
-            const senderId = value.sender.id;
-            // const recipientId = value.recipient.id;
-            const timestamp = new Date(parseInt(value.timestamp) * 1000);
-            const text = value.message?.text || '[Message Instagram non textuel]';
-            const msgData = {
-                id: value.message.mid || `insta-${Date.now()}`,
-                contactId: senderId,
-                text,
-                direction: 'incoming',
-                timestamp,
-                status: 'received'
-            };
-            // Stocker les infos de contact
-            if (!contacts.has(senderId)) {
-                contacts.set(senderId, {
-                    id: senderId,
-                    name: `Instagram User ${senderId}`,
-                    lastMessage: text,
-                    messages: messages.get(contactId) || [],
-                    lastMessageTime: timestamp
-                });
-            }
-            // Stocker le message
-            if (!messages.has(senderId)) {
-                messages.set(senderId, []);
-            }
-            messages.get(senderId).push(msgData);
-            
-        // Broadcast to connected clients
+        console.log('message afficher', JSON.stringify(value, null, 2));
+
+        const senderId = value.sender.id;
+        const timestamp = new Date(parseInt(value.timestamp) * 1000);
+        const text = value.message?.text || '[Message Instagram non textuel]';
+
+        const msgData = {
+            id: value.message.mid || `insta-${Date.now()}`,
+            contactId: senderId,
+            text,
+            direction: 'incoming',
+            timestamp,
+            status: 'received'
+        };
+
+        // Stocker les infos de contact
+        if (!contacts.has(senderId)) {
+            contacts.set(senderId, {
+                id: senderId,
+                name: `Instagram User ${senderId}`,
+                lastMessage: text,
+                messages: [],
+                lastMessageTime: timestamp
+            });
+        } else {
+            // Mettre à jour les infos du contact existant
+            const contact = contacts.get(senderId);
+            contact.lastMessage = text;
+            contact.lastMessageTime = timestamp;
+        }
+
+        // Stocker le message
+        if (!messages.has(senderId)) {
+            messages.set(senderId, []);
+        }
+        messages.get(senderId).push(msgData);
+
+        // Récupérer les infos de contact à envoyer aux clients
+        const contactInfo = contacts.get(senderId);
+
+        // Broadcast aux clients connectés
         broadcast({
             type: 'message',
             message: msgData,
             contact: contactInfo
         });
 
-        // Send read receipt
-        markMessageAsRead(message.id);
+        // Read receipt (si `message.id` existe bien)
+        if (value.message?.id) {
+            markMessageAsRead(value.message.id);
+        }
 
     } catch (error) {
         console.error('Error handling incoming message:', error);
     }
 }
+
 
 function getMessageText(message) {
     if (message.text) return message.text.body;
