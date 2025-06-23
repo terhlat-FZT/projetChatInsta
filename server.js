@@ -151,9 +151,9 @@ function handleIncomingMessage(value) {
 
 
 function getMessageText(message) {
-    console.log('📨 Contenu brut du message reçu :', JSON.stringify(message, null, 2));
-    console.log(typeof message=== 'string',typeof message);
-        if (typeof message === 'string') return message.text;// ✅ pour Instagram
+    // console.log('📨 Contenu brut du message reçu :', JSON.stringify(message, null, 2));
+    // console.log(typeof message=== 'string');
+        if (typeof message === 'string') return message;// ✅ pour Instagram
         // if (typeof message.text === 'object' && message.text.body) return message.text.body; // ✅ pour WhatsApp
 
     if (message.image) return '[Image]';
