@@ -259,7 +259,7 @@ async function handleClientMessage(data, clientId) {
 // WhatsApp API functions
 async function sendWhatsAppMessage(contactId, text) {
     const response = await axios.post(
-        `https://graph.facebook.com/${configInstagrame.apiVersion}/me/messages`,
+        `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
         {
             messaging_product: 'instagram',
           recipient:{id:contactId },
@@ -279,7 +279,7 @@ async function sendWhatsAppMessage(contactId, text) {
 async function markMessageAsRead(messageId) {
     try {
         await axios.post(
-             `https://graph.facebook.com/${configInstagrame.apiVersion}/me/messages`,
+        `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
            {
             messaging_product: 'instagram',
           recipient:{id:contactId },
