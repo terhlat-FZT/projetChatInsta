@@ -50,17 +50,16 @@ app.get('/webhook', (req, res) => {
 app.post('/webhook', (req, res) => {
     try {
         const body = req.body;
-        
-        if (body.object === 'instagram') {
-            body.entry.forEach(entry => {
-                entry.changes.forEach(change => {
-                    if (change.field === 'messages') {
-                        handleIncomingMessage(change.value);
-                    }
+  if (body.object === 'instagram' && Array.isArray(body.entry)) {
+        body.entry.forEach(entry => {
+            if (Array.isArray(entry.messaging)) {
+                entry.messaging.forEach(message => {
+                    handleIncomingMessage(message);
                 });
-            });
-        }
-        
+            }      
+     
+   });
+}
         res.status(200).send('EVENT_RECEIVED');
     } catch (error) {
         console.error('Webhook error:', error);
