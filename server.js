@@ -37,7 +37,7 @@ app.get('/webhook', (req, res) => {
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
 
-    if (mode && token === config.verifyToken) {
+    if (mode && token === configInstagrame.verifyToken) {
         console.log('✅ Webhook verified');
         res.status(200).send(challenge);
     } else {
@@ -164,7 +164,7 @@ wss.on('connection', (ws) => {
         try {
             const message = JSON.parse(data);
             
-            if (message.type === 'auth' && message.token === config.accessToken) {
+            if (message.type === 'auth' && message.token === configInstagrame.INSTAGRAM_ACCESS_TOKEN) {
                 console.log(`Client ${clientId} authenticated`);
             } 
             else if (message.type === 'send_message') {
@@ -263,17 +263,18 @@ async function sendWhatsAppMessage(contactId, text) {
 async function markMessageAsRead(messageId) {
     try {
         await axios.post(
-            `https://graph.facebook.com/${configInstagrame.apiVersion}/me/messages`,
+             `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
+           {
+            messaging_product: 'instagram',
+          recipient:{id:contactId },
+            type: 'text',
+            text: { body: text }
+        },
             {
-                messaging_product: 'instagram',
-                status: 'read',
-                message_id: messageId
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${configInstagrame.PAGEaccessToken}`,
-                    'Content-Type': 'application/json'
-                }
+               headers: {
+                'Authorization': `Bearer ${configInstagrame.INSTAGRAM_ACCESS_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
             }
         );
     } catch (error) {
