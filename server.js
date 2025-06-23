@@ -180,7 +180,7 @@ wss.on('connection', (ws) => {
         try {
             const message = JSON.parse(data);
             
-            if (message.type === 'auth' && message.token === configInstagrame.INSTAGRAM_ACCESS_TOKEN) {
+            if (message.type === 'auth' && message.token === configInstagrame.PAGEaccessToken) {
                 console.log(`Client ${clientId} authenticated`);
             } 
             else if (message.type === 'send_message') {
@@ -259,7 +259,7 @@ async function handleClientMessage(data, clientId) {
 // WhatsApp API functions
 async function sendWhatsAppMessage(contactId, text) {
     const response = await axios.post(
-        `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
+        `https://graph.facebook.com/${configInstagrame.apiVersion}/me/messages`,
         {
             messaging_product: 'instagram',
           recipient:{id:contactId },
@@ -268,7 +268,7 @@ async function sendWhatsAppMessage(contactId, text) {
         },
         {
             headers: {
-                'Authorization': `Bearer ${configInstagrame.INSTAGRAM_ACCESS_TOKEN}`,
+                'Authorization': `Bearer ${configInstagrame.PAGEaccessToken}`,
                 'Content-Type': 'application/json'
             }
         },
@@ -279,7 +279,7 @@ async function sendWhatsAppMessage(contactId, text) {
 async function markMessageAsRead(messageId) {
     try {
         await axios.post(
-             `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
+             `https://graph.facebook.com/${configInstagrame.apiVersion}/me/messages`,
            {
             messaging_product: 'instagram',
           recipient:{id:contactId },
@@ -288,7 +288,7 @@ async function markMessageAsRead(messageId) {
         },
             {
                headers: {
-                'Authorization': `Bearer ${configInstagrame.INSTAGRAM_ACCESS_TOKEN}`,
+                'Authorization': `Bearer ${configInstagrame.PAGEaccessToken}`,
                 'Content-Type': 'application/json'
             }
             }
