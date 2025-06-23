@@ -280,7 +280,7 @@ async function markMessageAsRead(messageId) {
             messaging_product: 'instagram',
           recipient:{id:contactId },
             type: 'text',
-            text: { body: text }
+            text: { body: messageId }
         },
             {
                headers: {
