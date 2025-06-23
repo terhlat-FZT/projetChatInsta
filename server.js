@@ -202,7 +202,10 @@ wss.on('connection', (ws) => {
 async function handleClientMessage(data, clientId) {
     try {
         const { contactId, text } = data;
-        
+        if (!contactId || typeof contactId !== 'string' || !contactId.startsWith('178')) {
+    throw new Error('Invalid Instagram recipient ID');
+}
+
         // Create temporary message for UI
         const tempMsg = {
             id: `temp-${Date.now()}`,
@@ -224,7 +227,7 @@ async function handleClientMessage(data, clientId) {
         });
 
         // Send via WhatsApp API
-        const response = await sendWhatsAppMessage(contactId, text);
+        const response = await sendInstagramMessage(contactId, text);
         
         // Update with real message ID and status
         const realMsg = {
@@ -257,13 +260,13 @@ async function handleClientMessage(data, clientId) {
 }
 
 // WhatsApp API functions
-async function sendWhatsAppMessage(contactId, text) {
+async function sendInstagramMessage(contactId, text) {
     const response = await axios.post(
         `https://graph.facebook.com/${configInstagrame.apiVersion}/${configInstagrame.ig_busness_id}/messages`,
         {
             messaging_product: 'instagram',
           recipient:{id:contactId },
-            type: 'text',
+            // type: 'text',
             text: { body: text }
         },
         {
