@@ -271,7 +271,7 @@ async function sendWhatsAppMessage(contactId, text) {
         },
         {
             headers: {
-                'Authorization': `Bearer ${configInstagrame.INSTAGRAM_ACCESS_TOKEN}`,
+                'Authorization': `Bearer ${configInstagrame.PAGEaccessToken}`,
                 'Content-Type': 'application/json'
             }
         },
@@ -291,7 +291,7 @@ async function markMessageAsRead(messageId) {
         },
             {
                headers: {
-                'Authorization': `Bearer ${configInstagrame.INSTAGRAM_ACCESS_TOKEN}`,
+                'Authorization': `Bearer ${configInstagrame.PAGEaccessToken}`,
                 'Content-Type': 'application/json'
             }
             }
